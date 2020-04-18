@@ -12,7 +12,7 @@ import 'session.dart';
 
 void main() => runApp(MyApp());
 
-const String URI = "http://192.168.0.9:5050/";
+//const String URI = "http://ec2-13-232-202-63.ap-south-1.compute.amazonaws.com:5050/";
 
 class MyApp extends StatefulWidget {
   @override
@@ -31,7 +31,8 @@ class _MyAppState extends State<MyApp> {
   Map<String, bool> _isProbablyConnected = {};
   List<TableOrder> completedOrders = [];
   String loginId;
-  String URI = "http://192.168.0.9:5050/";
+  String URI =
+      "http://ec2-13-232-202-63.ap-south-1.compute.amazonaws.com:5050/";
 
   Session loginSession;
   @override
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     loginSession = new Session();
     manager = SocketIOManager();
 
-    refresh();
+    login();
 //    getURI();
 //    initSocket(URI);
   }
@@ -50,11 +51,12 @@ class _MyAppState extends State<MyApp> {
     List<String> loginId_URL = await _getDataFromSaved();
     loginId = loginId_URL[1];
     print("login id: $loginId");
-    var output = await loginSession.post("http://192.168.0.9:5050/login",
+    var output = await loginSession.post(
+        "http://ec2-13-232-202-63.ap-south-1.compute.amazonaws.com:5050/login",
         {"username": loginId, "password": "password123"});
-
+    initSocket(URI);
     print(output['refresh_token']);
-    await _saveData(output['refresh_token']);
+//    await _saveData(output['refresh_token']);
     print(output);
     if (output['code'] == '401') {
       print('auth faild');
@@ -63,53 +65,45 @@ class _MyAppState extends State<MyApp> {
     } else if (output['code'] == '200') {
       print('loggedIn');
 
-      String savedUrl = loginId_URL[0];
+//      String URI = loginId_URL[0];
 
-      initSocket(savedUrl);
     }
-//      getURI();
-//    headersi = response.headers['set-cookie'];
-//    print(headersi['set-cookie']);
-//    var resp = jsonDecode(response.body);
-//    print(resp);
   }
 
-  refresh() async {
-    List<String> loginId_URL = await _getDataFromSaved();
-    String savedUrl = loginId_URL[0];
-    loginId = loginId_URL[1];
-
-    String refreshToken = loginId_URL[2];
-    var status = await loginSession.post(
-        "http://192.168.0.9:5050/refresh", {"username": loginId},
-        refresh: refreshToken);
-
-    await _saveData();
-
-    print(status);
-    if (status['code'] == null) {
-      print("Error, couldnt get jwt token");
-    } else if (status['code'] == '200') {
-      initSocket(savedUrl);
-    }
-    return true;
-  }
+//  refresh() async {
+//    List<String> loginId_URL = await _getDataFromSaved();
+//    String savedUrl = loginId_URL[0];
+//    loginId = loginId_URL[1];
+//
+//    String refreshToken = loginId_URL[2];
+//    var status = await loginSession.post(
+//        "http://192.168.0.9:5050/refresh", {"username": loginId},
+//        refresh: refreshToken);
+//
+//    await _saveData();
+//
+//    print(status);
+//    if (status['code'] == null) {
+//      print("Error, couldnt get jwt token");
+//    } else if (status['code'] == '200') {
+//      initSocket(savedUrl);
+//    }
+//    return true;
+//  }
 
 //  get_rest() async {
 //    var output = await loginSession.get("http://192.168.0.9:5050/rest");
 //    print(output);
 //  }
 
-  getURI() async {}
-
   Future<List<String>> _getDataFromSaved() async {
     print("getData");
     final prefs = await SharedPreferences.getInstance();
     final pre = await SharedPreferences.getInstance();
-    final ref = await SharedPreferences.getInstance();
+//    final ref = await SharedPreferences.getInstance();
     final loginid = prefs.getString('loginid');
     final url = pre.getString('s_url');
-    final refreshtoken = ref.getString('ref_token');
+//    final refreshtoken = ref.getString('ref_token');
 
     setState(() {
       loginId = loginid;
@@ -119,20 +113,20 @@ class _MyAppState extends State<MyApp> {
       urlController.text = url;
     });
 
-    return [url, loginid, refreshtoken];
+    return [url, loginid];
   }
 
   Future<void> _saveData([String refreshToken]) async {
     final prefs = await SharedPreferences.getInstance();
     final pre = await SharedPreferences.getInstance();
-    final ref = await SharedPreferences.getInstance();
+//    final ref = await SharedPreferences.getInstance();
 
     String currentid = loginIdController.text.toString();
     String currentUrl = urlController.text.toString();
 
-    if (refreshToken != null) {
-      await ref.setString('ref_token', refreshToken);
-    }
+//    if (refreshToken != null) {
+//      await ref.setString('ref_token', refreshToken);
+//    }
 
     if (loginIdController.text.isNotEmpty) {
       await prefs.setString('loginid', currentid);
@@ -146,7 +140,7 @@ class _MyAppState extends State<MyApp> {
       // to recall init function when url is updated
 
 //      getURI();
-//      login();
+      login();
     }
   }
 
@@ -157,7 +151,7 @@ class _MyAppState extends State<MyApp> {
     SocketIO socket = await manager.createInstance(SocketOptions(
         //Socket IO server URI
         uri,
-        nameSpace: "/adhara",
+        nameSpace: "/reliefo",
         //Query params - can be used for authentication
         query: {
           "jwt": loginSession.jwt,
@@ -194,7 +188,7 @@ class _MyAppState extends State<MyApp> {
 //      print(listener);
       print('herllo rehere');
       disconnect('working');
-      refresh();
+//      refresh();
     });
     socket.onReconnecting((listener) {
       print('asdfsadfs');
@@ -213,9 +207,9 @@ class _MyAppState extends State<MyApp> {
 
       disconnect('working');
       print('object disconnnecgts');
-      while (refresh()) {
-        print('trying again');
-      }
+//      while (refresh()) {
+//        print('trying again');
+//      }
     });
     socket.on("fetch", (data) => pprint(data));
     socket.on("new_orders", (data) => fetchNewOrders(data));
