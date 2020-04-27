@@ -54,6 +54,8 @@ class _MyAppState extends State<MyApp> {
     var output = await loginSession.post(
         "http://ec2-13-232-202-63.ap-south-1.compute.amazonaws.com:5050/login",
         {"username": loginId, "password": "password123"});
+    print("def");
+    print(URI);
     initSocket(URI);
     print(output['refresh_token']);
 //    await _saveData(output['refresh_token']);
@@ -107,7 +109,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       loginId = loginid;
-      URI = url;
+//      URI = url;
 
       loginIdController.text = loginid;
       urlController.text = url;
@@ -116,7 +118,7 @@ class _MyAppState extends State<MyApp> {
     return [url, loginid];
   }
 
-  Future<void> _saveData([String refreshToken]) async {
+  Future<void> _saveData() async {
     final prefs = await SharedPreferences.getInstance();
     final pre = await SharedPreferences.getInstance();
 //    final ref = await SharedPreferences.getInstance();
@@ -136,16 +138,15 @@ class _MyAppState extends State<MyApp> {
     if (urlController.text.isNotEmpty) {
       await pre.setString('s_url', currentUrl);
       urlController.clear();
-
-      // to recall init function when url is updated
-
-//      getURI();
-      login();
     }
+
+    login();
+    print("login called");
   }
 
   initSocket(uri) async {
     print('hey from init');
+    print(loginSession.jwt);
 
     var identifier = 'working';
     SocketIO socket = await manager.createInstance(SocketOptions(
@@ -159,7 +160,7 @@ class _MyAppState extends State<MyApp> {
           "timestamp": DateTime.now().toString()
         },
         //Enable or disable platform channel logging
-        enableLogging: true,
+        enableLogging: false,
         transports: [
           Transports.WEB_SOCKET /*, Transports.POLLING*/
         ] //Enable required transport
@@ -174,42 +175,16 @@ class _MyAppState extends State<MyApp> {
 //      sendMessage("DEFAULT");
       print("on Connected");
       print(data);
+      socket.emit("fetch_handshake", ["Hello world!"]);
       socket.emit("fetchme", ["Hello world!"]);
       socket.emit("fetch_order_lists", ["arguments"]);
     });
-    socket.onConnectError((data) {
-      pprint(data);
-      print('inside error fiun');
-      disconnect('working');
-    });
+    socket.onConnectError(pprint);
     socket.onConnectTimeout(pprint);
     socket.onError(pprint);
-    socket.onReconnect((listener) {
-//      print(listener);
-      print('herllo rehere');
-      disconnect('working');
-//      refresh();
-    });
-    socket.onReconnecting((listener) {
-      print('asdfsadfs');
-    });
-
-    socket.onReconnectError((listener) {
-      print('asdfsadfs');
-    });
-    socket.onReconnectFailed((listener) {
-      print('asdfsadfs');
-    });
     socket.onDisconnect((data) {
-      setState(() {
-        webSocketConnected = false;
-      });
-
-      disconnect('working');
       print('object disconnnecgts');
-//      while (refresh()) {
-//        print('trying again');
-//      }
+//      disconnect('working');
     });
     socket.on("fetch", (data) => pprint(data));
     socket.on("new_orders", (data) => fetchNewOrders(data));
@@ -258,8 +233,7 @@ class _MyAppState extends State<MyApp> {
       if (data is Map) {
         data = json.encode(data);
       }
-//      print("object");
-//      print(data);
+
       queueOrders.clear();
       cookingOrders.clear();
       completedOrders.clear();
@@ -513,35 +487,34 @@ class _MyAppState extends State<MyApp> {
                 child: Text('submit login id'),
                 onPressed: () {
                   _saveData();
-                  _getDataFromSaved();
                 },
               ),
             ),
             Divider(),
-            Container(
-              child: TextFormField(
-                controller: urlController,
-                decoration: InputDecoration(
-                  labelText: "Enter url",
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  //fillColor: Colors.green
-                ),
-                keyboardType: TextInputType.text,
-              ),
-            ),
-            Container(
-              color: Colors.black26,
-              child: FlatButton(
-                child: Text('submit url'),
-                onPressed: () {
-                  _saveData();
-                  _getDataFromSaved();
-                },
-              ),
-            ),
+//            Container(
+//              child: TextFormField(
+//                controller: urlController,
+//                decoration: InputDecoration(
+//                  labelText: "Enter url",
+//                  fillColor: Colors.white,
+//                  border: OutlineInputBorder(
+//                    borderRadius: BorderRadius.circular(12.0),
+//                  ),
+//                  //fillColor: Colors.green
+//                ),
+//                keyboardType: TextInputType.text,
+//              ),
+//            ),
+//            Container(
+//              color: Colors.black26,
+//              child: FlatButton(
+//                child: Text('submit url'),
+//                onPressed: () {
+//                  _saveData();
+////                  _getDataFromSaved();
+//                },
+//              ),
+//            ),
 
             Divider(),
             ///////////////////
