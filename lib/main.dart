@@ -240,7 +240,13 @@ class _MyAppState extends State<MyApp> {
 
       var decoded = jsonDecode(data);
 //      print("object");
-
+      print(decoded.keys);
+      print("queued");
+      print(decoded['queue']);
+      print("cooking");
+      print(decoded['cooking']);
+      print("completed");
+      print(decoded['completed']);
       decoded["queue"].forEach((item) {
         TableOrder order = TableOrder.fromJson(item);
 

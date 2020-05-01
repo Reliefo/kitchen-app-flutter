@@ -11,9 +11,7 @@ class TableOrder {
   TableOrder.fromJson(Map<String, dynamic> json) {
     oId = json['_id']['\$oid'];
 
-    RegExp regExp = new RegExp("[0-9]+");
-
-    table = regExp.firstMatch(json['table']).group(0);
+    table = json['table'];
 
     orders = new List<Order>();
     json['orders'].forEach((v) {
