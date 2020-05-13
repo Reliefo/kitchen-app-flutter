@@ -1,4 +1,4 @@
-package com.example.kitchenfinal
+package com.liqr.kitchenapp
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

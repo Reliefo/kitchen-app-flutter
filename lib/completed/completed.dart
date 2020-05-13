@@ -32,6 +32,7 @@ class Completed extends StatelessWidget {
               completedOrders.length > 0
                   ? Expanded(
                       child: ListView.builder(
+                        reverse: true,
                         shrinkWrap: true,
                         itemCount: completedOrders.length,
                         itemBuilder: (context, index) {
@@ -67,11 +68,13 @@ class Completed extends StatelessWidget {
                                 ],
                               ),
                               ListView.builder(
+                                reverse: true,
                                 primary: false,
                                 itemCount: completedOrders[index].orders.length,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index2) {
                                   return ListView.builder(
+                                      reverse: true,
                                       primary: false,
                                       shrinkWrap: true,
                                       itemCount: completedOrders[index]

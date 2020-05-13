@@ -1,5 +1,19 @@
 import 'package:flutter/material.dart';
 
+const titleS1 = TextStyle(
+  fontSize: 14.0,
+  color: Colors.black,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.normal,
+);
+
+const subtitleS1 = TextStyle(
+  fontSize: 12.0,
+  color: Color(0xff909090),
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.normal,
+);
+
 const homePageS1 = TextStyle(
   fontSize: 20.0,
   color: Colors.black,

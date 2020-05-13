@@ -149,82 +149,9 @@ class Queued extends StatelessWidget {
               },
             ),
           )
-
-        // display when there in nothing in the queue
-//            : Expanded(
-//                child: Container(
-//                  width: double.maxFinite,
-//                  child: Column(
-//                    children: <Widget>[
-//                      Expanded(
-//                        child: Padding(
-//                          padding: const EdgeInsets.all(20.0),
-//                          child: Image.asset(
-//                            'assets/icons/plate.png',
-//                          ),
-//                        ),
-//                      ),
-//                      Expanded(
-//                        child: Center(
-//                          child: Text(
-//                            'No Orders Yet',
-//                            style: homePageS4,
-//                          ),
-//                        ),
-//                      ),
-//                    ],
-//                  ),
-//                ),
-//              ),
-
         : Flexible(
             fit: FlexFit.loose,
             child: Text("nothing in cooking"),
           );
   }
 }
-
-//
-//ListTile(
-//                                    title: Text(
-//                                      '${queueOrders[index].orders[index2].foodlist[index3].name} x '
-//                                              '${queueOrders[index].orders[index2].foodlist[index3].quantity}' ??
-//                                          " ",
-////
-//                                      style: homePageS3,
-//                                    ),
-//                                    subtitle: queueOrders[index]
-//                                                .orders[index2]
-//                                                .foodlist[index3]
-//                                                .instructions ==
-//                                            "no"
-//                                        ? null
-//                                        : Text(
-//                                            queueOrders[index]
-//                                                    .orders[index2]
-//                                                    .foodlist[index3]
-//                                                    .instructions ??
-//                                                " ",
-//                                          ),
-//                                    trailing: IconButton(
-//                                      icon: Icon(Icons.add),
-//                                      onPressed: () {
-//                                        updateOrders(
-//                                          queueOrders[index].oId,
-//                                          queueOrders[index].orders[index2].oId,
-//                                          queueOrders[index]
-//                                              .orders[index2]
-//                                              .foodlist[index3]
-//                                              .foodId,
-//                                          "cooking",
-//                                        );
-//
-////Todo: send item to cooking list insted of queue orders
-//
-//                                        Scaffold.of(context).showSnackBar(
-//                                            SnackBar(
-//                                                content:
-//                                                    Text(' added to cooking')));
-//                                      },
-//                                    ),
-//                                  );
