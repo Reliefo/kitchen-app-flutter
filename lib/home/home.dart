@@ -22,25 +22,28 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          color: Colors.grey,
           child: Column(
             children: <Widget>[
               Expanded(
                 child: Container(
-                  color: Colors.blueGrey,
+//                  color: Colors.blueGrey,
                   child: ListView(
                     children: <Widget>[
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Container(
+                            decoration: BoxDecoration(
+                                color: kThemeColor,
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.zero,
+                                    bottom: Radius.circular(8))),
                             padding: EdgeInsets.symmetric(vertical: 4),
                             width: double.maxFinite,
-                            color: Colors.black12,
                             child: Center(
                               child: Text(
                                 'Cooking',
-                                style: homePageS4,
+                                style: kHeaderStyle,
                               ),
                             ),
                           ),
@@ -49,13 +52,17 @@ class HomePage extends StatelessWidget {
                             updateOrders: updateOrders,
                           ),
                           Container(
+                            decoration: BoxDecoration(
+                                color: kThemeColor,
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.zero,
+                                    bottom: Radius.circular(8))),
                             padding: EdgeInsets.symmetric(vertical: 4),
                             width: double.maxFinite,
-                            color: Colors.black12,
                             child: Center(
                               child: Text(
                                 'Queued',
-                                style: homePageS4,
+                                style: kHeaderStyle,
                               ),
                             ),
                           ),

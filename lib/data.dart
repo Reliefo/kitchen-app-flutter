@@ -116,15 +116,17 @@ class FoodItem {
   String instructions;
   String status = 'queued';
   int quantity;
-
-  FoodItem(
-      {this.description,
-      this.name,
-      this.price,
-      this.foodId,
-      this.quantity,
-      this.status,
-      this.instructions});
+  FoodOption foodOption;
+  FoodItem({
+    this.description,
+    this.name,
+    this.price,
+    this.foodId,
+    this.quantity,
+    this.status,
+    this.instructions,
+    this.foodOption,
+  });
 
   FoodItem.fromJson(Map<String, dynamic> json) {
     description = json['description'];
@@ -133,16 +135,42 @@ class FoodItem {
     foodId = json['food_id'];
     quantity = json['quantity'];
     instructions = json['instructions'];
-  }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['description'] = this.description;
-    data['name'] = this.name;
-    data['price'] = this.price;
-    data['food_id'] = this.foodId;
-    data['quantity'] = this.quantity;
-    data['instructions'] = this.instructions;
-    return data;
+    if (json['food_options'] != null) {
+      foodOption = new FoodOption.fromJson(json['food_options']);
+    }
+  }
+}
+
+class FoodOption {
+  List<Map<String, dynamic>> options;
+  List<String> choices;
+
+  FoodOption({
+    this.options,
+    this.choices,
+  });
+
+  FoodOption.fromJson(Map<String, dynamic> json) {
+//    print("while adding food iption");
+//    print(json['options']);
+    if (json['options'] != null) {
+      options = new List<Map<String, dynamic>>();
+      json['options'].forEach((option) {
+//        print("here");
+//        print(option["option_name"]);
+//        print(option["option_price"]);
+        options.add(option);
+
+//        print("added");
+      });
+    }
+
+    if (json['choices'] != null) {
+      choices = new List<String>();
+      json['choices'].forEach((v) {
+        choices.add(v);
+      });
+    }
   }
 }

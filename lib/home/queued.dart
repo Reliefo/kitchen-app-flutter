@@ -30,8 +30,8 @@ class Queued extends StatelessWidget {
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           child: Text(
-                            'Table : ${queueOrders[index].table}' ?? " ",
-                            style: homePageS1,
+                            queueOrders[index].table ?? " ",
+                            style: kHeaderStyleSmall,
                           ),
                         ),
                         Container(
@@ -39,12 +39,12 @@ class Queued extends StatelessWidget {
                               EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           child: Text(
 //
-                            'Arrival Time : ${formatDate(
+                            formatDate(
                                   (queueOrders[index].timeStamp),
                                   [HH, ':', nn],
-                                )}' ??
+                                ) ??
                                 " ",
-                            style: homePageS3,
+                            style: kHeaderStyleSmall,
                           ),
                         ),
                       ],
@@ -71,45 +71,79 @@ class Queued extends StatelessWidget {
                                       padding: EdgeInsets.fromLTRB(16, 6, 0, 6),
                                       child:
 // for checking instructions
+
+                                          Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            '${queueOrders[index].orders[index2].foodList[index3].name} x ${queueOrders[index].orders[index2].foodList[index3].quantity}' ??
+                                                " ",
+//
+                                            style: kTitleStyle,
+                                          ),
                                           queueOrders[index]
                                                       .orders[index2]
                                                       .foodList[index3]
                                                       .instructions ==
-                                                  "no"
-                                              ? Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      '${queueOrders[index].orders[index2].foodList[index3].name} x ${queueOrders[index].orders[index2].foodList[index3].quantity}' ??
-                                                          " ",
-//
-                                                      style: homePageS3,
-                                                    ),
-                                                  ],
-                                                )
-                                              : Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      '${queueOrders[index].orders[index2].foodList[index3].name} x ${queueOrders[index].orders[index2].foodList[index3].quantity}' ??
-                                                          " ",
-//
-                                                      style: homePageS3,
-                                                    ),
-
-// for checking instructions
-
-                                                    Text(
-                                                      queueOrders[index]
-                                                              .orders[index2]
-                                                              .foodList[index3]
-                                                              .instructions ??
-                                                          " ",
-                                                    ),
-                                                  ],
+                                                  null
+                                              ? Container(width: 0, height: 0)
+                                              : Text(
+                                                  queueOrders[index]
+                                                          .orders[index2]
+                                                          .foodList[index3]
+                                                          .instructions ??
+                                                      " ",
+                                                  style: kSubTitleStyle,
                                                 ),
+                                          queueOrders[index]
+                                                      .orders[index2]
+                                                      .foodList[index3]
+                                                      .foodOption !=
+                                                  null
+                                              ? ListView.builder(
+                                                  shrinkWrap: true,
+                                                  primary: false,
+                                                  itemCount: queueOrders[index]
+                                                      .orders[index2]
+                                                      .foodList[index3]
+                                                      .foodOption
+                                                      .options
+                                                      .length,
+                                                  itemBuilder:
+                                                      (context, index4) {
+                                                    return Text(
+                                                      '${queueOrders[index].orders[index2].foodList[index3].foodOption.options[index4]['option_name']}' ??
+                                                          " ",
+                                                    );
+                                                  },
+                                                )
+                                              : Container(width: 0, height: 0),
+                                          queueOrders[index]
+                                                      .orders[index2]
+                                                      .foodList[index3]
+                                                      .foodOption !=
+                                                  null
+                                              ? ListView.builder(
+                                                  shrinkWrap: true,
+                                                  primary: false,
+                                                  itemCount: queueOrders[index]
+                                                      .orders[index2]
+                                                      .foodList[index3]
+                                                      .foodOption
+                                                      .choices
+                                                      .length,
+                                                  itemBuilder:
+                                                      (context, index4) {
+                                                    return Text(
+                                                      '${queueOrders[index].orders[index2].foodList[index3].foodOption.choices[index4]}' ??
+                                                          " ",
+                                                    );
+                                                  },
+                                                )
+                                              : Container(width: 0, height: 0),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(
@@ -126,13 +160,6 @@ class Queued extends StatelessWidget {
                                               .foodId,
                                           "cooking",
                                         );
-
-//Todo: send item to cooking list insted of queue orders
-
-                                        Scaffold.of(context).showSnackBar(
-                                            SnackBar(
-                                                content:
-                                                    Text(' added to cooking')));
                                       },
                                     ),
                                   )

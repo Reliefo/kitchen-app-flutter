@@ -17,13 +17,16 @@ class Completed extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
+                decoration: BoxDecoration(
+                    color: kThemeColor,
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.zero, bottom: Radius.circular(8))),
                 padding: EdgeInsets.symmetric(vertical: 4),
                 width: double.maxFinite,
-                color: Colors.black12,
                 child: Center(
                   child: Text(
                     'Completed',
-                    style: homePageS4,
+                    style: kHeaderStyle,
                   ),
                 ),
               ),
@@ -31,90 +34,95 @@ class Completed extends StatelessWidget {
               //to check if there is orders in queue or not
               completedOrders.length > 0
                   ? Expanded(
-                      child: ListView.builder(
-                        reverse: true,
-                        shrinkWrap: true,
-                        itemCount: completedOrders.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 16),
-                                    child: Text(
-                                      'Table : ${completedOrders[index].table}' ??
-                                          " ",
-                                      style: homePageS1,
+                      child: SingleChildScrollView(
+                        child: ListView.builder(
+                          primary: false,
+                          reverse: true,
+                          shrinkWrap: true,
+                          itemCount: completedOrders.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 16),
+                                      child: Text(
+                                        completedOrders[index].table ?? " ",
+                                        style: kHeaderStyleSmall,
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 16),
-                                    child: Text(
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 16),
+                                      child: Text(
 //
-                                      'Arrival Time : ${formatDate(
-                                            (completedOrders[index].timeStamp),
-                                            [HH, ':', nn],
-                                          )}' ??
-                                          " ",
-                                      style: homePageS3,
+                                        formatDate(
+                                              (completedOrders[index]
+                                                  .timeStamp),
+                                              [HH, ':', nn],
+                                            ) ??
+                                            " ",
+                                        style: kHeaderStyleSmall,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              ListView.builder(
-                                reverse: true,
-                                primary: false,
-                                itemCount: completedOrders[index].orders.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index2) {
-                                  return ListView.builder(
-                                      reverse: true,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      itemCount: completedOrders[index]
-                                          .orders[index2]
-                                          .foodList
-                                          .length,
-                                      itemBuilder: (context, index3) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      16, 6, 0, 6),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        '${completedOrders[index].orders[index2].foodList[index3].name} x ${completedOrders[index].orders[index2].foodList[index3].quantity}' ??
-                                                            " ",
+                                  ],
+                                ),
+                                ListView.builder(
+                                  reverse: true,
+                                  primary: false,
+                                  itemCount:
+                                      completedOrders[index].orders.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index2) {
+                                    return ListView.builder(
+                                        reverse: true,
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        itemCount: completedOrders[index]
+                                            .orders[index2]
+                                            .foodList
+                                            .length,
+                                        itemBuilder: (context, index3) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Container(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            16, 6, 0, 6),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          '${completedOrders[index].orders[index2].foodList[index3].name} x ${completedOrders[index].orders[index2].foodList[index3].quantity}' ??
+                                                              " ",
 //
-                                                        style: homePageS3,
-                                                      ),
-                                                    ],
-                                                  )),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                },
-                              ),
-                              Divider(
-                                thickness: 2,
-                              ),
-                            ],
-                          );
-                        },
+                                                          style: kTitleStyle,
+                                                        ),
+                                                      ],
+                                                    )),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                ),
+                                Divider(
+                                  thickness: 2,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     )
 

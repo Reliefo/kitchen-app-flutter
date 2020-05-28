@@ -16,7 +16,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-//  String refreshUrl = "http://192.168.0.9:5050/refresh";
   bool authentication = false;
   bool showLoading = true;
   String accessToken;
@@ -41,6 +40,23 @@ class _MyAppState extends State<MyApp> {
     print(savedData);
 
     return savedData;
+  }
+
+  checkRefresh() async {
+    var savedData = await _getSavedData();
+
+    print("Saved Refresh token : ${savedData["refreshToken"]} ");
+
+    if (savedData["refreshToken"] != null) {
+      print(" found refresh token calling refresh");
+      refresh(refreshUrl);
+    } else {
+      print(" token not found calling login");
+      setState(() {
+        authentication = false;
+        showLoading = false;
+      });
+    }
   }
 
   refresh(url) async {
@@ -79,7 +95,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    refresh(refreshUrl);
+    checkRefresh();
 
     super.initState();
   }
