@@ -8,14 +8,14 @@ class TableOrder {
 
   TableOrder({this.oId, this.table, this.orders, this.timeStamp, this.status});
 
-  TableOrder.fromJson(Map<String, dynamic> json) {
+  TableOrder.fromJson(Map<String, dynamic> json, String kitchenId) {
     oId = json['_id']['\$oid'];
 
     table = json['table'];
 
     orders = new List<Order>();
     json['orders'].forEach((v) {
-      orders.add(new Order.fromJson(v));
+      orders.add(new Order.fromJson(v, kitchenId));
     });
 
     timeStamp = DateTime.parse(json['timestamp']);
@@ -71,14 +71,23 @@ class Order {
 
   Order({this.oId, this.placedBy, this.foodList, this.status});
 
-  Order.fromJson(Map<String, dynamic> json) {
+  Order.fromJson(Map<String, dynamic> json, String kitchenId) {
     placedBy = json['placed_by']['\$oid'];
     oId = json['_id']['\$oid'];
 
     foodList = new List<FoodItem>();
+    Map<String, dynamic> tempFood = {};
     json['food_list'].forEach((v) {
-      foodList.add(FoodItem.fromJson(v));
+      if (v["kitchen"] == kitchenId) {
+        tempFood = v;
+      }
+
+      if (tempFood != null && tempFood.isNotEmpty) {
+        foodList.add(FoodItem.fromJson(tempFood));
+      }
     });
+    print("testtt");
+    print(tempFood.isNotEmpty);
   }
 
   Order.fromJsonNew(Map<String, dynamic> json) {

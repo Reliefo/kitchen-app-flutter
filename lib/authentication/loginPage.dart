@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   String username, password;
   String jwt, refreshToken, staffId, restaurantId;
   int responseCode;
-
+  String responseFromBackend;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -101,6 +101,13 @@ class _LoginPageState extends State<LoginPage> {
             password = val;
           },
         ),
+        SizedBox(height: 15.0),
+        responseFromBackend != null
+            ? Text(responseFromBackend)
+            : Container(
+                height: 0,
+                width: 0,
+              ),
         SizedBox(height: 15.0),
         RaisedButton(
           onPressed: _sendToServer,
@@ -210,6 +217,10 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       _saveData();
+    } else {
+      setState(() {
+        responseFromBackend = decoded["status"];
+      });
     }
 // 201 for temp password Matched successfully
     // 200 for original password Matched successfully

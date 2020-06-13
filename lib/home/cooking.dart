@@ -21,15 +21,14 @@ class Cooking extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
-//                          color: Color(0xffDFDFDF),
                     color: Color(0xffF5DEB5),
-//            color: Colors.blue[100],
                     borderRadius: BorderRadius.all(
                       Radius.circular(10.0),
                     ),
                   ),
-                  margin: EdgeInsets.all(12),
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+//
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -104,21 +103,6 @@ class Cooking extends StatelessWidget {
                                               cookingOrders[index]
                                                           .orders[index2]
                                                           .foodList[index3]
-                                                          .instructions ==
-                                                      "no"
-                                                  ? Container(
-                                                      width: 0, height: 0)
-                                                  : Text(
-                                                      cookingOrders[index]
-                                                              .orders[index2]
-                                                              .foodList[index3]
-                                                              .instructions ??
-                                                          " ",
-                                                      style: kSubTitleStyle,
-                                                    ),
-                                              cookingOrders[index]
-                                                          .orders[index2]
-                                                          .foodList[index3]
                                                           .foodOption !=
                                                       null
                                                   ? ListView.builder(
@@ -166,6 +150,21 @@ class Cooking extends StatelessWidget {
                                                     )
                                                   : Container(
                                                       width: 0, height: 0),
+                                              cookingOrders[index]
+                                                          .orders[index2]
+                                                          .foodList[index3]
+                                                          .instructions ==
+                                                      null
+                                                  ? Container(
+                                                      width: 0, height: 0)
+                                                  : Text(
+                                                      cookingOrders[index]
+                                                              .orders[index2]
+                                                              .foodList[index3]
+                                                              .instructions ??
+                                                          " ",
+                                                      style: kSubTitleStyle,
+                                                    ),
                                             ],
                                           ),
                                         ),
@@ -186,12 +185,6 @@ class Cooking extends StatelessWidget {
                                                   .foodId,
                                               "completed",
                                             );
-                                            //Todo: send item to cooking list insted of queue orders
-
-                                            Scaffold.of(context).showSnackBar(
-                                                SnackBar(
-                                                    content: Text(
-                                                        "item added to cooking")));
                                           },
                                         ),
                                       ),
@@ -234,55 +227,11 @@ class Cooking extends StatelessWidget {
 //              ),
 //            ),
 //          );
-        : Flexible(
-            fit: FlexFit.loose,
-            child: Text("nothing in cooking"),
+        : Container(
+            height: MediaQuery.of(context).size.height * 0.30,
+            child: Center(
+              child: Text("Nothing to cook", style: kHeaderStyleSmall),
+            ),
           );
   }
 }
-
-//ListTile(
-//title: Text(
-//'${cookingOrders[index].orders[index2].foodlist[index3].name} x '
-//'${cookingOrders[index].orders[index2].foodlist[index3].quantity}' ??
-//" ",
-////
-//style: homePageS3,
-//),
-//subtitle: cookingOrders[index]
-//.orders[index2]
-//.foodlist[index3]
-//.instructions ==
-//"no"
-//? null
-//: Text(
-//cookingOrders[index]
-//.orders[index2]
-//.foodlist[index3]
-//.instructions ??
-//" ",
-//),
-//trailing: IconButton(
-//icon: Icon(Icons.done),
-//onPressed: () {
-//updateOrders(
-//cookingOrders[index].oId,
-//cookingOrders[index]
-//    .orders[index2]
-//    .oId,
-//cookingOrders[index]
-//    .orders[index2]
-//    .foodlist[index3]
-//    .foodId,
-//"completed",
-//);
-//
-////Todo: send item to cooking list insted of queue orders
-//
-//Scaffold.of(context).showSnackBar(
-//SnackBar(
-//content: Text(
-//' added to completed')));
-//},
-//),
-//);

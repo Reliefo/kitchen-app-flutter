@@ -33,7 +33,7 @@ class _ConnectionState extends State<Connection> {
   List<TableOrder> cookingOrders = [];
   List<TableOrder> completedOrders = [];
   Map<String, bool> _isProbablyConnected = {};
-  String kitchenStaffName;
+  String kitchenStaffName, restaurantName, kitchenId;
   @override
   void initState() {
     super.initState();
@@ -93,7 +93,7 @@ class _ConnectionState extends State<Connection> {
       print('object disconnnecgts');
     });
     socket.on("logger", (data) => pprint(data));
-
+    socket.on("restaurant_object", (data) => fetchRestaurantObject(data));
     socket.on("kitchen_staff_object", (data) => fetchStaffObject(data));
     socket.on("order_lists", (data) => fetchInitialLists(data));
     socket.on("new_orders", (data) => fetchNewOrders(data));
@@ -125,6 +125,13 @@ class _ConnectionState extends State<Connection> {
     });
   }
 
+  fetchRestaurantObject(data) {
+    print("restaurant object");
+    print(data['name']);
+
+    restaurantName = data['name'];
+  }
+
   fetchStaffObject(data) {
     print(data);
 
@@ -132,11 +139,12 @@ class _ConnectionState extends State<Connection> {
       data = json.encode(data);
     }
     var decoded = jsonDecode(data);
-    print(decoded['name']);
+    print(decoded);
     setState(() {
       kitchenStaffName = decoded['name'];
+      kitchenId = decoded['kitchen'];
     });
-    print("fetchStaffObject not implimented");
+    print("fetchStaffObject not implimented completely");
   }
 
   fetchInitialLists(data) {
@@ -160,17 +168,18 @@ class _ConnectionState extends State<Connection> {
       print("completed");
       print(decoded['completed']);
       decoded["queue"].forEach((item) {
-        TableOrder order = TableOrder.fromJson(item);
+        print(item);
+        TableOrder order = TableOrder.fromJson(item, kitchenId);
 
         queueOrders.add(order);
       });
       decoded["cooking"].forEach((item) {
-        TableOrder order = TableOrder.fromJson(item);
+        TableOrder order = TableOrder.fromJson(item, kitchenId);
 
         cookingOrders.add(order);
       });
       decoded["completed"].forEach((item) {
-        TableOrder ord = TableOrder.fromJson(item);
+        TableOrder ord = TableOrder.fromJson(item, kitchenId);
 
         completedOrders.add(ord);
       });
@@ -186,7 +195,7 @@ class _ConnectionState extends State<Connection> {
       print("New orders have come to the Queue");
       print(jsonDecode(data));
 
-      TableOrder order = TableOrder.fromJson(jsonDecode(data));
+      TableOrder order = TableOrder.fromJson(jsonDecode(data), kitchenId);
 
       queueOrders.add(order);
     });
@@ -349,14 +358,13 @@ class _ConnectionState extends State<Connection> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.staffId);
-
     return MaterialApp(
       home: Scaffold(
         drawer: Drawer(
           child: DrawerMenu(
             staffId: widget.staffId,
             staffName: kitchenStaffName,
+            restaurantName: restaurantName,
           ),
         ),
         body: webSocketConnected == true

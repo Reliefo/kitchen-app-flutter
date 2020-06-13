@@ -5,9 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DrawerMenu extends StatelessWidget {
   final String staffName;
   final String staffId;
+  final String restaurantName;
   DrawerMenu({
     this.staffName,
     this.staffId,
+    this.restaurantName,
   });
 
   clearData() async {
@@ -20,10 +22,11 @@ class DrawerMenu extends StatelessWidget {
     return ListView(
       children: <Widget>[
         DrawerHeader(
-          child: Container(
-            child: Center(
-              child: Text("Hey ! $staffName "),
-            ),
+          child: Column(
+            children: <Widget>[
+              Text(restaurantName),
+              Text("Hey ! $staffName "),
+            ],
           ),
         ),
 
@@ -45,7 +48,7 @@ class DrawerMenu extends StatelessWidget {
 //          },
 //        ),
 
-        Divider(),
+//        Divider(),
 
         FlatButton(
           child: Center(
