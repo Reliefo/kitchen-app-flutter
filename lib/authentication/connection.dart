@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-import 'package:adhara_socket_io/adhara_socket_io.dart';
-import 'package:adhara_socket_io/options.dart';
+//import 'package:adhara_socket_io/adhara_socket_io.dart';
+//import 'package:adhara_socket_io/options.dart';
 import 'package:flutter/material.dart';
 import 'package:kitchen/completed/completed.dart';
 import 'package:kitchen/data.dart';
 import 'package:kitchen/drawer/drawerMenu.dart';
 import 'package:kitchen/home/home.dart';
 import 'package:kitchen/url.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Connection extends StatefulWidget {
   final String jwt;
@@ -27,8 +28,8 @@ class _ConnectionState extends State<Connection> {
   final loginIdController = new TextEditingController();
   final urlController = new TextEditingController();
 
-  SocketIOManager manager;
-  Map<String, SocketIO> sockets = {};
+//  SocketIOManager manager;
+  Map<String, IO.Socket> sockets = {};
   List<TableOrder> queueOrders = [];
   List<TableOrder> cookingOrders = [];
   List<TableOrder> completedOrders = [];
@@ -38,73 +39,107 @@ class _ConnectionState extends State<Connection> {
   void initState() {
     super.initState();
 
-    manager = SocketIOManager();
+//    manager = SocketIOManager();
 
-    initSocket(uri);
+//    initSocket(uri);
   }
 
-  initSocket(uri) async {
-    print('hey from init');
-//    print(loginSession.jwt);
+//  initSocket(uri) async {
+//    print('hey from init');
+////    print(loginSession.jwt);
+//
+//    var identifier = 'working';
+//    SocketIO socket = await manager.createInstance(SocketOptions(
+//        //Socket IO server URI
+//        uri,
+//        nameSpace: "/reliefo",
+//        //Query params - can be used for authentication
+//        query: {
+//          "jwt": widget.jwt,
+//          "info": "new connection from adhara-socketio",
+//          "timestamp": DateTime.now().toString()
+//        },
+//        //Enable or disable platform channel logging
+//        enableLogging: false,
+//        transports: [
+//          Transports.WEB_SOCKET /*, Transports.POLLING*/
+//        ] //Enable required transport
+//
+//        ));
+//    socket.onConnect((data) {
+//      pprint({"Status": "connected..."});
+//      setState(() {
+//        webSocketConnected = true;
+//      });
+//
+//      print("on Connected");
+//      print(data);
+//
+//      socket.emit("check_logger", [" sending........."]);
+//
+//      socket.emit("fetch_kitchen_details", [
+//        jsonEncode({
+//          "restaurant_id": widget.restaurantId,
+//          "kitchen_staff_id": widget.staffId
+//        })
+//      ]);
+////      socket.emit("fetch_order_lists", [
+////        jsonEncode({"restaurant_id": widget.restaurantId})
+////      ]);
+//    });
+//    socket.onConnectError(pprint);
+//    socket.onConnectTimeout(pprint);
+//    socket.onError(pprint);
+//    socket.onDisconnect((data) {
+//      print('object disconnnecgts');
+//    });
+//    socket.on("logger", (data) => pprint(data));
+//    socket.on("restaurant_object", (data) => fetchRestaurantObject(data));
+//    socket.on("kitchen_staff_object", (data) => fetchStaffObject(data));
+//    socket.on("order_lists", (data) => fetchInitialLists(data));
+//    socket.on("new_orders", (data) => fetchNewOrders(data));
+//    socket.on("order_updates", (data) => fetchOrderUpdates(data));
+//
+//    socket.connect();
+//    sockets[identifier] = socket;
+//  }
 
-    var identifier = 'working';
-    SocketIO socket = await manager.createInstance(SocketOptions(
-        //Socket IO server URI
-        uri,
-        nameSpace: "/reliefo",
-        //Query params - can be used for authentication
-        query: {
-          "jwt": widget.jwt,
-          "info": "new connection from adhara-socketio",
-          "timestamp": DateTime.now().toString()
-        },
-        //Enable or disable platform channel logging
-        enableLogging: false,
-        transports: [
-          Transports.WEB_SOCKET /*, Transports.POLLING*/
-        ] //Enable required transport
-
-        ));
-    socket.onConnect((data) {
-      pprint({"Status": "connected..."});
+  initWebSocket() async {
+    // Dart client
+    IO.Socket socket = IO.io(uri+"reliefo", <String, dynamic>{
+      'transports': ['polling'],
+      'extraHeaders': {'Authorization': 'Bearer '+widget.jwt} // optional
+    }
+    );
+    socket.on('connect', (_) {
+      print('connect');
       setState(() {
         webSocketConnected = true;
       });
+      socket.emit('msg', 'test');
+      socket.emit("check_logger", " sending.........");
 
-      print("on Connected");
-      print(data);
-
-      socket.emit("check_logger", [" sending........."]);
-
-      socket.emit("fetch_kitchen_details", [
+      socket.emit("fetch_kitchen_details",
         jsonEncode({
           "restaurant_id": widget.restaurantId,
           "kitchen_staff_id": widget.staffId
         })
-      ]);
-//      socket.emit("fetch_order_lists", [
-//        jsonEncode({"restaurant_id": widget.restaurantId})
-//      ]);
+      );
     });
-    socket.onConnectError(pprint);
-    socket.onConnectTimeout(pprint);
-    socket.onError(pprint);
-    socket.onDisconnect((data) {
-      print('object disconnnecgts');
-    });
-    socket.on("logger", (data) => pprint(data));
+    socket.on('event', (data) => print(data));
     socket.on("restaurant_object", (data) => fetchRestaurantObject(data));
     socket.on("kitchen_staff_object", (data) => fetchStaffObject(data));
     socket.on("order_lists", (data) => fetchInitialLists(data));
     socket.on("new_orders", (data) => fetchNewOrders(data));
     socket.on("order_updates", (data) => fetchOrderUpdates(data));
+    socket.on('disconnect', (_) => print('disconnect'));
+    socket.on('fromServer', (_) => print(_));
 
-    socket.connect();
-    sockets[identifier] = socket;
+    sockets["liqr"] = socket;
   }
 
   disconnect(String identifier) async {
-    await manager.clearInstance(sockets[identifier]);
+//    await manager.clearInstance(sockets[identifier]);
 
     setState(() {
       webSocketConnected = false;
@@ -126,19 +161,20 @@ class _ConnectionState extends State<Connection> {
   }
 
   fetchRestaurantObject(data) {
-    print("restaurant object");
-    print(data['name']);
-
-    restaurantName = data['name'];
+    if (data is Map) {
+      data = json.encode(data);
+    }
+    var decoded = jsonDecode(data);
+    restaurantName = decoded['name'];
   }
 
   fetchStaffObject(data) {
-    print(data);
 
     if (data is Map) {
       data = json.encode(data);
     }
     var decoded = jsonDecode(data);
+    print("fetch_staff_object return")
     print(decoded);
     setState(() {
       kitchenStaffName = decoded['name'];
@@ -160,13 +196,13 @@ class _ConnectionState extends State<Connection> {
 
       var decoded = jsonDecode(data);
 //      print("object");
-      print(decoded.keys);
-      print("queued");
-      print(decoded['queue']);
-      print("cooking");
-      print(decoded['cooking']);
-      print("completed");
-      print(decoded['completed']);
+//      print(decoded.keys);
+//      print("queued");
+//      print(decoded['queue']);
+//      print("cooking");
+//      print(decoded['cooking']);
+//      print("completed");
+//      print(decoded['completed']);
       decoded["queue"].forEach((item) {
         print(item);
         TableOrder order = TableOrder.fromJson(item, kitchenId);
@@ -256,16 +292,15 @@ class _ConnectionState extends State<Connection> {
   }
 
   updateOrders(utableId, uorderId, ufoodId, utype) {
-    SocketIO socket = sockets['working'];
-    socket.emit("kitchen_updates", [
-      {
-        "table_order_id": utableId,
-        "order_id": uorderId,
-        "food_id": ufoodId,
-        "type": utype,
-        "kitchen_staff_id": widget.staffId
-      }
-    ]);
+    IO.Socket socket = sockets['liqr'];
+    Map<String, dynamic> sendData = {
+      "table_order_id": utableId,
+      "order_id": uorderId,
+      "food_id": ufoodId,
+      "type": utype,
+      "kitchen_staff_id": widget.staffId
+    }
+    socket.emit("kitchen_updates", json.encode(sendData));
     setState(() {
       var toRemove = [];
       var selectedOrder;
