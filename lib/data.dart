@@ -86,8 +86,7 @@ class Order {
         foodList.add(FoodItem.fromJson(tempFood));
       }
     });
-    print("testtt");
-    print(tempFood.isNotEmpty);
+    print("orders are coming here");
   }
 
   Order.fromJsonNew(Map<String, dynamic> json) {

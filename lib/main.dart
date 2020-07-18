@@ -22,8 +22,6 @@ class _MyAppState extends State<MyApp> {
   String restaurantId;
   String staffId;
   Future<Map<String, dynamic>> _getSavedData() async {
-    print("getData");
-
     final credentials = await SharedPreferences.getInstance();
 
     final restaurantId = credentials.getString('restaurantId');
@@ -37,21 +35,19 @@ class _MyAppState extends State<MyApp> {
       "refreshToken": refreshToken
     };
 
-    print(savedData);
-
     return savedData;
   }
 
   checkRefresh() async {
     var savedData = await _getSavedData();
 
-    print("Saved Refresh token : ${savedData["refreshToken"]} ");
+//    print("Saved Refresh token : ${savedData["refreshToken"]} ");
 
     if (savedData["refreshToken"] != null) {
-      print(" found refresh token calling refresh");
+//      print(" found refresh token calling refresh");
       refresh(refreshUrl);
     } else {
-      print(" token not found calling login");
+//      print(" token not found calling login");
       setState(() {
         authentication = false;
         showLoading = false;
@@ -70,15 +66,15 @@ class _MyAppState extends State<MyApp> {
     Map<String, String> headers = {
       "Authorization": "Bearer ${savedData["refreshToken"]}"
     };
-    print("headers $headers");
+//    print("headers $headers");
     http.Response response = await http.post(url, headers: headers);
 
     int statusCode = response.statusCode;
     // this API passes back the id of the new item added to the body
     var decoded = json.decode(response.body);
-    print("status in main page code");
-    print(decoded);
-    print(statusCode);
+//    print("status in main page code");
+//    print(decoded);
+//    print(statusCode);
     if (statusCode == 200) {
       setState(() {
         accessToken = decoded["access_token"];
@@ -102,7 +98,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print("here build method");
+//    print("here build method");
     return showLoading == true
         ? LoadingPage()
         : authentication == true

@@ -42,6 +42,7 @@ class _ConnectionState extends State<Connection> {
 //    manager = SocketIOManager();
 
 //    initSocket(uri);
+    initWebSocket();
   }
 
 //  initSocket(uri) async {
@@ -106,11 +107,11 @@ class _ConnectionState extends State<Connection> {
 
   initWebSocket() async {
     // Dart client
-    IO.Socket socket = IO.io(uri+"reliefo", <String, dynamic>{
-      'transports': ['polling'],
-      'extraHeaders': {'Authorization': 'Bearer '+widget.jwt} // optional
-    }
-    );
+    print('connect');
+    IO.Socket socket = IO.io("https://liqr.cc/reliefo", <String, dynamic>{
+      'transports': ['websocket'],
+      'extraHeaders': {'Authorization': 'Bearer ' + widget.jwt} // optional
+    });
     socket.on('connect', (_) {
       print('connect');
       setState(() {
@@ -119,12 +120,12 @@ class _ConnectionState extends State<Connection> {
       socket.emit('msg', 'test');
       socket.emit("check_logger", " sending.........");
 
-      socket.emit("fetch_kitchen_details",
-        jsonEncode({
-          "restaurant_id": widget.restaurantId,
-          "kitchen_staff_id": widget.staffId
-        })
-      );
+      socket.emit(
+          "fetch_kitchen_details",
+          jsonEncode({
+            "restaurant_id": widget.restaurantId,
+            "kitchen_staff_id": widget.staffId
+          }));
     });
     socket.on('event', (data) => print(data));
     socket.on("restaurant_object", (data) => fetchRestaurantObject(data));
@@ -169,18 +170,17 @@ class _ConnectionState extends State<Connection> {
   }
 
   fetchStaffObject(data) {
-
     if (data is Map) {
       data = json.encode(data);
     }
     var decoded = jsonDecode(data);
-    print("fetch_staff_object return")
+    print("fetch_staff_object return");
     print(decoded);
     setState(() {
       kitchenStaffName = decoded['name'];
       kitchenId = decoded['kitchen'];
     });
-    print("fetchStaffObject not implimented completely");
+//    print("fetchStaffObject notdd implimented completely");
   }
 
   fetchInitialLists(data) {
@@ -204,7 +204,7 @@ class _ConnectionState extends State<Connection> {
 //      print("completed");
 //      print(decoded['completed']);
       decoded["queue"].forEach((item) {
-        print(item);
+//        print(item);
         TableOrder order = TableOrder.fromJson(item, kitchenId);
 
         queueOrders.add(order);
@@ -299,7 +299,7 @@ class _ConnectionState extends State<Connection> {
       "food_id": ufoodId,
       "type": utype,
       "kitchen_staff_id": widget.staffId
-    }
+    };
     socket.emit("kitchen_updates", json.encode(sendData));
     setState(() {
       var toRemove = [];
